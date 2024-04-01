@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import {JwtPayload} from "jsonwebtoken";
 
 import AdvancedError from "../helpers/advanced-error";
-import JWT from "../utils/jwt";
+import JWT from "../utils/jwt.util";
 
 
 export default function (type: 'admin' | 'user'){
@@ -16,7 +16,9 @@ export default function (type: 'admin' | 'user'){
             //first check if this is valid
             const payload = await (new JWT()).verify(token);
             //now find a user with this token
-            (req as any).session = (payload as JwtPayload).session;
+            const session = (payload as JwtPayload).session;
+            if(session.expired) throw new AdvancedError("Session expired, Login", 401);
+            (req as any).session = session;
             next();
         }catch(e: any){
             next(e)

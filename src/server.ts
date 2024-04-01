@@ -7,10 +7,10 @@ import { NextFunction, Request, Response } from "express";
 
 import AdvancedError from "./helpers/advanced-error";
 import router from "./routers/index.router";
-import mongoConnect from "./utils/mongo-connect";
+import mongoConnect from "./utils/mongo-connect.util";
 import connect from "./app";
 import generalConfig from "./config/general";
-import log from "./utils/logger";
+import log from "./utils/logger.util";
 // import "./tester";
 import ConfigEvent from "./events/config.event";
 
@@ -91,11 +91,15 @@ server.on("error", async err => {
 // }
 
 server.listen(generalConfig.PORT, async() => {
-    const config = new ConfigEvent();
-    await config.listenForAmqp(generalConfig.MAIN_QUEUE_NAME);
-    //connect mongoose
-    console.log({id: process.pid});
-    await mongoConnect();
-    const addr = server.address() as AddressInfo;
-    console.log(`Server has started on http://${addr.address}:${addr.port}`);
+    try{
+        const config = new ConfigEvent();
+        await config.listenForAmqp(generalConfig.MAIN_QUEUE_NAME);
+        //connect mongoose
+        console.log({id: process.pid});
+        await mongoConnect();
+        const addr = server.address() as AddressInfo;
+        console.log(`Server has started on http://${addr.address}:${addr.port}`);
+    }catch(e:any){
+        return console.error(e.message);
+    }
 })

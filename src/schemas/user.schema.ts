@@ -28,6 +28,44 @@ export const createUserSchema = object({
 })
 
 
+export const loginCallbackSchema = object({
+    params: object({
+        provider: string({
+            required_error: "Provider is a required field"
+        }).min(5, "Must be more than 4 in length")
+    })
+})
+
+
+export const forgotPasswordSchema = object({
+    body: object({
+        email: string({
+            required_error: "Email is required"
+        })
+    })
+})
+
+
+
+export const updatePasswordSchema = object({
+    body: object({
+        newPassword: string({
+            required_error: 'New password is required'
+        }),
+        token: string({
+            required_error: 'Token is required'
+        })
+    })
+})
+
+
+
+
+export type UpdatePassword =TypeOf<typeof updatePasswordSchema>;
+
+export type ForgotPassword = TypeOf<typeof forgotPasswordSchema>;
+
+export type LoginCallback = TypeOf<typeof loginCallbackSchema>;
 
 export type CreateUser = TypeOf<typeof createUserSchema>;
 

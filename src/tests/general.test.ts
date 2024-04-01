@@ -1,4 +1,4 @@
-import addFunction from "../utils/add-function"
+import addFunction from "../utils/add-function.util"
 
 
 describe("test add function", () => {

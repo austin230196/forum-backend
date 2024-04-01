@@ -5,20 +5,24 @@
   "main": "src/server.ts",
   "scripts": {
     "start:dev": "nodemon src/server.ts",
-    "test": "jest"
+    "test": "jest",
+    "build": "npx tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "amqplib": "^0.10.3",
+    "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
+    "cloudinary": "^2.1.0",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.0",
     "node-device-detector": "^2.0.18",
     "nodemailer": "^6.9.12",
+    "query-string": "^9.0.0",
     "winston": "^3.12.0",
     "zod": "^3.22.4"
   },

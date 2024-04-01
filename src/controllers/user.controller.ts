@@ -3,9 +3,9 @@ import {type DetectResult} from "node-device-detector";
 
 import BaseController from "./base.controller";
 import UserService from "../services/user.service";
-import { LoginUser, CreateUser } from "../schemas/user.schema";
+import { LoginUser, CreateUser, LoginCallback, ForgotPassword, UpdatePassword } from "../schemas/user.schema";
 import AdvancedError from "../helpers/advanced-error";
-import JWT from "../utils/jwt";
+import JWT from "../utils/jwt.util";
 import SessionService from "../services/session.service";
 import generalConfig from "../config/general";
 import { ISession } from "../models/session.model";
@@ -25,6 +25,75 @@ export default class UserController extends BaseController {
             await this.userService.create(req.body);
             return this.sendSuccessWithData(res, 'User created successfully', 201, null);
         }catch(e: any){next(e)}
+    }
+
+    public async forgotPassword(req: Request<{}, {}, ForgotPassword["body"]> & {device: DetectResult}, res: Response, next: NextFunction) {
+        try{
+            let user = await this.userService.find({email: req.body.email});
+            if(!user) throw new AdvancedError("User account not found", 404);
+            if(user.accountType !== 'manual') throw new AdvancedError("Invalid account type for action", 422);
+            //first get the token
+            //create a session for the token
+            let existingSession = this.sessionService.findOne({id: user!._id, expired: false})
+            let session;
+            if(!existingSession){
+                //create one
+                session = await this.sessionService.create({
+                    userId: user._id,
+                    userAgent: req.get('User-Agent'),
+                    device: req.device
+                })
+            }
+            let token = await this.jwt.sign({session: session ? session : existingSession}, {
+                expiresIn: generalConfig.FORGOT_PASSWORD_TOKEN_TTL
+            })
+            
+            //then create a link
+            let params = new URLSearchParams();
+            params.append("token", token);
+            const link = `${generalConfig.WEB_APP_URL}?${params}`;
+
+            //send email to this user
+            console.log({link});
+
+            return this.sendSuccessWithData(res, `An email has been sent this address (${user.email})`, 200, null);
+        }catch(e: any){next(e)}
+    }
+
+
+    public async updatePassword(req: Request<{}, {}, UpdatePassword["body"]>, res: Response, next: NextFunction){
+        try{
+            //first get session by validating
+            const {token, newPassword} = req.body;
+            let payload = await this.jwt.verify(token);
+            if(typeof(payload) === 'string') throw new AdvancedError(payload, 401);
+            let session = payload.session;
+            if(session.expired) throw new AdvancedError("Session expired", 401);
+            let user = await this.userService.find({id: session.user_id, accountType: 'manual'});
+            if(!user) throw new AdvancedError("Invalid user", 400);
+
+            //user found
+            //update their password
+            await this.userService.updatePassword({_id: user.id}, newPassword);
+            //revoke all user sessions
+            await this.sessionService.invalidate({user_id: user._id});
+
+            return this.sendSuccess(res, "Password updated", 201);
+        }catch(e: any){next(e)}
+    }
+
+
+    public async loginCallBack(req: Request<LoginCallback["params"]>, res: Response, next: NextFunction){
+        try{
+            const provider = (req.params.provider).toLocaleLowerCase();
+            if(!provider) throw new AdvancedError("Provider not found", 422);
+            let isValid = generalConfig.VALID_PROVIDERS.includes(provider);
+            if(!isValid) throw new AdvancedError("Invalid provider", 422);
+            
+        }catch(e: any){
+            console.log("loginCallback#user has errored")
+            next(e);
+        }
     }
 
     
