@@ -18,5 +18,6 @@ export default {
     SMTP_PASS: process.env.SMTP_PASS,
     SMTP_USER: process.env.SMTP_USER,
     SMTP_PORT:  process.env.SMTP_PORT,
-    REDIS_KEY: 'forum-clients'
+    REDIS_KEY: 'forum-clients',
+    MAIN_QUEUE_NAME: 'forum-queue'
 }

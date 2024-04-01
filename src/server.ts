@@ -12,6 +12,7 @@ import connect from "./app";
 import generalConfig from "./config/general";
 import log from "./utils/logger";
 // import "./tester";
+import ConfigEvent from "./events/config.event";
 
 
 const app = connect();
@@ -19,10 +20,22 @@ const server = http.createServer(app);
 const cpus = os.cpus().length;
 
 
+type IData = {
+    content: string;
+    date: Date
+}
+
+
 app.use("/api", router);
 
 app.get("/health", async (req, res, next) => {
     try{
+        const config = new ConfigEvent();
+        const data = {
+            content: "This is for testing our queue systems",
+            date: new Date()
+        }
+        await config.addToAmqpQueue<IData>(data, generalConfig.MAIN_QUEUE_NAME);
         res.status(200);
         return res.json({
             message: "API is live",
@@ -78,6 +91,8 @@ server.on("error", async err => {
 // }
 
 server.listen(generalConfig.PORT, async() => {
+    const config = new ConfigEvent();
+    await config.listenForAmqp(generalConfig.MAIN_QUEUE_NAME);
     //connect mongoose
     console.log({id: process.pid});
     await mongoConnect();
