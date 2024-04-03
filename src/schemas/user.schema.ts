@@ -28,11 +28,25 @@ export const createUserSchema = object({
 })
 
 
+export const socialLoginSchema = object({
+    params: object({
+        provider: string({
+            required_error: "Provider is a required field"
+        }).min(5, "Must be more than 4 in length")
+    }),
+})
+
+
 export const loginCallbackSchema = object({
     params: object({
         provider: string({
             required_error: "Provider is a required field"
         }).min(5, "Must be more than 4 in length")
+    }),
+    body: object({
+        code: string({
+            required_error: "Code is required for authentication"
+        })
     })
 })
 
@@ -66,6 +80,8 @@ export type UpdatePassword =TypeOf<typeof updatePasswordSchema>;
 export type ForgotPassword = TypeOf<typeof forgotPasswordSchema>;
 
 export type LoginCallback = TypeOf<typeof loginCallbackSchema>;
+
+export type SocialLogin = TypeOf<typeof socialLoginSchema>;
 
 export type CreateUser = TypeOf<typeof createUserSchema>;
 

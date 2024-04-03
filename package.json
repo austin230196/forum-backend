@@ -22,7 +22,6 @@
     "mongoose": "^8.2.0",
     "node-device-detector": "^2.0.18",
     "nodemailer": "^6.9.12",
-    "query-string": "^9.0.0",
     "winston": "^3.12.0",
     "zod": "^3.22.4"
   },

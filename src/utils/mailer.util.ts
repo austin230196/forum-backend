@@ -9,7 +9,7 @@ export default class Mailer {
         this.transporter = nodemailer.createTransport({
             host: generalConfig.SMTP_HOST,
             port: generalConfig.SMTP_PORT,
-            secure: true,
+            secure: false,
             auth: {
                 user: generalConfig.SMTP_USER,
                 pass: generalConfig.SMTP_PASS

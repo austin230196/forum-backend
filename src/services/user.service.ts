@@ -15,7 +15,20 @@ export default class UserService {
         })
         await user.save();
 
-        return user.toJSON();
+        return user;
+    }
+
+
+    public async createSocialAccount(provider: 'google'|'github', email:string, name: string, avatarURL: string|null): Promise<HydratedDocument<IUser>> {
+        const user = new User({
+            name,
+            email,
+            accountType: provider,
+            avatar: avatarURL
+        })
+        await user.save();
+
+        return user;
     }
 
 

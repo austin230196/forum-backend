@@ -35,7 +35,7 @@ app.get("/health", async (req, res, next) => {
             content: "This is for testing our queue systems",
             date: new Date()
         }
-        await config.addToAmqpQueue<IData>(data, generalConfig.MAIN_QUEUE_NAME);
+        await config.addToAmqpQueue<IData>({type: 'test', payload: data}, generalConfig.MAIN_QUEUE_NAME);
         res.status(200);
         return res.json({
             message: "API is live",

@@ -1,5 +1,6 @@
 import amqplib from "amqplib";
 import AdvancedError from "../helpers/advanced-error";
+import generalConfig from "../config/general";
 
 
 export default class ConfigEvent {
@@ -11,7 +12,7 @@ export default class ConfigEvent {
 
 
     private async getChannel(){
-        const conn = await amqplib.connect("amqps://ghqhkuxg:odAJIwmuvB7f0UM5D91B12fi4hIwtVgs@armadillo.rmq.cloudamqp.com/ghqhkuxg");
+        const conn = await amqplib.connect(generalConfig.AMQP_URL);
         const channel = await conn.createChannel();
         return channel;
     }
@@ -35,7 +36,7 @@ export default class ConfigEvent {
 
 
 
-    public async addToAmqpQueue<T>(data: T, queueName: string){
+    public async addToAmqpQueue<T>(data: {type: string; payload: T}, queueName: string){
         let channel = await this.getChannel();
         await channel.assertQueue(queueName);
 

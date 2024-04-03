@@ -30,12 +30,14 @@ export default {
 
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID || '',
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET || '',
-    GITHUB_URL: "https://github.com/login/oauth/authorize?",
+    GITHUB_URL: process.env.GITHUB_URL || '',
+    GITHUB_USER_URL: process.env.GITHUB_USER_URL || '',
     GITHUB_CALLBACK_URL: "https://api.programmable-forum.online/api/v1/login/provider/callback",
 
     CLOUDINARY_APP_NAME: process.env.CLOUDINARY_APP_NAME ?? '',
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY ?? '',
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET ?? '',
 
-    WEB_APP_URL: process.env.WEB_APP_URL ?? ''
+    WEB_APP_URL: process.env.WEB_APP_URL ?? '',
+    AMQP_URL: process.env.AMQP_URL ?? ''
 }
