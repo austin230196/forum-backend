@@ -10,11 +10,12 @@ import { LoginUser, CreateUser, LoginCallback, ForgotPassword, UpdatePassword, S
 import AdvancedError from "../helpers/advanced-error";
 import JWT from "../utils/jwt.util";
 import SessionService from "../services/session.service";
-import generalConfig from "../config/general";
+import generalConfig from "../config/general.config";
 import { ISession } from "../models/session.model";
 import GithubLoginProxyService from "../service-proxies/github.login.proxy.service";
 import { IUser } from "../models/user.model";
 import Mailer from "../utils/mailer.util";
+import GoogleLoginProxyService from "../service-proxies/google.login.proxy.service";
 
 
 export default class UserController extends BaseController {
@@ -23,6 +24,7 @@ export default class UserController extends BaseController {
         protected readonly sessionService: SessionService,
         protected readonly jwt: JWT,
         protected readonly githubLoginService: GithubLoginProxyService,
+        protected readonly googleLoginService: GoogleLoginProxyService,
         protected readonly mailer: Mailer
     ){
         super();
@@ -36,6 +38,10 @@ export default class UserController extends BaseController {
             switch(req.params.provider){
                 case 'github':
                     url = await this.githubLoginService.getLoginURL();
+                    break;
+
+                case 'google':
+                    url = await this.googleLoginService.getLoginURL();
                     break;
 
                 default:
@@ -136,10 +142,11 @@ export default class UserController extends BaseController {
             if(!provider) throw new AdvancedError("Provider not found", 422);
             let isValid = generalConfig.VALID_PROVIDERS.includes(provider);
             if(!isValid) throw new AdvancedError("Invalid provider", 422);
+            console.log({provider, code});
             switch(provider){
-                case 'github':
-                    const accessToken = await this.githubLoginService.getAccessToken(code);
-                    const userDetails = await this.githubLoginService.getUserDetails(accessToken);
+                case 'github': {
+                    let accessToken = await this.githubLoginService.getAccessToken(code);
+                    let userDetails = await this.githubLoginService.getUserDetails(accessToken);
                     let {id, login, avatar_url, email} = userDetails;
                     if(!email){
                         const r = await this.githubLoginService.getUserEmails(accessToken);
@@ -155,8 +162,24 @@ export default class UserController extends BaseController {
                     //at this point an existing user exists;
                     //we log this user in
                     return await this.loginUser(req, res, next, existingUser);
+                }
+
+                case 'google': {
+                    let accessToken = await this.googleLoginService.getAccessToken(code);
+                    let userDetails = await this.googleLoginService.getUserDetails(accessToken);
+                    const {id, email, name, picture} = userDetails;
+                    let existingUser = await this.userService.find({email});
+                    if(!existingUser){
+                        //create user
+                        existingUser = await this.userService.createSocialAccount(provider, email, name, picture);
+                    }
+                    //at this point an existing user exists;
+                    //we log this user in
+                    return await this.loginUser(req, res, next, existingUser);
+                }
             }
         }catch(e: any){
+            console.log(e.message);
             console.log("loginCallback#user has errored")
             next(e);
         }

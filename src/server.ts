@@ -9,7 +9,7 @@ import AdvancedError from "./helpers/advanced-error";
 import router from "./routers/index.router";
 import mongoConnect from "./utils/mongo-connect.util";
 import connect from "./app";
-import generalConfig from "./config/general";
+import generalConfig from "./config/general.config";
 import log from "./utils/logger.util";
 // import "./tester";
 import ConfigEvent from "./events/config.event";

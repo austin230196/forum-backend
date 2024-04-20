@@ -1,6 +1,6 @@
 import amqplib from "amqplib";
 import AdvancedError from "../helpers/advanced-error";
-import generalConfig from "../config/general";
+import generalConfig from "../config/general.config";
 
 
 export default class ConfigEvent {

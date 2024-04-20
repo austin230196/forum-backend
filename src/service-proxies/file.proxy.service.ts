@@ -1,6 +1,6 @@
 import {v2 as cloudinaryV2} from "cloudinary";
 
-import generalConfig from "../config/general";
+import generalConfig from "../config/general.config";
 
 export default class FileProxyService {
     //get file and do with it what you want 

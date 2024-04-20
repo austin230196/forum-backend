@@ -10,6 +10,7 @@ import JWT from "../utils/jwt.util";
 import authenticate from "../middlewares/authenticate";
 import GithubLoginProxyService from "../service-proxies/github.login.proxy.service";
 import Mailer from "../utils/mailer.util";
+import GoogleLoginProxyService from "../service-proxies/google.login.proxy.service";
 
 
 const routerOptions: RouterOptions = {
@@ -20,7 +21,7 @@ const routerOptions: RouterOptions = {
 
 
 export const userRouter = Router(routerOptions);
-const userController = new UserController(new UserService(), new SessionService(), new JWT(), new GithubLoginProxyService(), new Mailer());
+const userController = new UserController(new UserService(), new SessionService(), new JWT(), new GithubLoginProxyService(), new GoogleLoginProxyService(), new Mailer());
 
 userRouter.route("/register").post(validate(createUserSchema), userController.createUser.bind(userController));
 userRouter.route("/login").post([validate(loginUserSchema), detectDevice], userController.login.bind(userController) as any);

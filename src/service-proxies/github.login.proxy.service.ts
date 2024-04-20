@@ -2,11 +2,12 @@ import { URLSearchParams } from "url";
 import axios from "axios";
 
 
-import generalConfig from "../config/general";
+import generalConfig from "../config/general.config";
+import BaseProxyService from "./base.proxy.service";
 
 
 
-export default class GithubLoginProxyService {
+export default class GithubLoginProxyService implements BaseProxyService{
     public async getLoginURL(): Promise<string>{
         const params = new URLSearchParams()
         params.append("client_id", generalConfig.GITHUB_CLIENT_ID);

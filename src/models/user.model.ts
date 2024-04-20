@@ -1,7 +1,7 @@
 import {Schema, model, Types, Document} from "mongoose";
 import bcrypt from "bcrypt";
 
-import generalConfig from "../config/general";
+import generalConfig from "../config/general.config";
 
 
 export interface IUser extends Document{

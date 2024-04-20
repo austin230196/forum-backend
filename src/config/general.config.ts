@@ -32,7 +32,11 @@ export default {
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET || '',
     GITHUB_URL: process.env.GITHUB_URL || '',
     GITHUB_USER_URL: process.env.GITHUB_USER_URL || '',
-    GITHUB_CALLBACK_URL: "https://api.programmable-forum.online/api/v1/login/provider/callback",
+    GITHUB_CALLBACK_URL: process.env.GITHUB_CALLBACK_URL || "https://api.programmable-forum.online/api/v1/login/provider/callback",
+
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || '',
+    GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL || '',
 
     CLOUDINARY_APP_NAME: process.env.CLOUDINARY_APP_NAME ?? '',
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY ?? '',

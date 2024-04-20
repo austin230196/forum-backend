@@ -1,5 +1,5 @@
 import nodemailer, {TransportOptions} from "nodemailer";
-import generalConfig from "../config/general";
+import generalConfig from "../config/general.config";
 
 
 

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import generalConfig from "../config/general";
+import generalConfig from "../config/general.config";
 
 
 export default class JWT {
